@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: mailosaur-dart
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      MAILOSAUR_BASE_URL: https://mailosaur.com/
+      MAILOSAUR_SMTP_HOST: mailosaur.net
+      MAILOSAUR_SMTP_PORT: 2525
+      MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+      MAILOSAUR_SERVER: ${{ secrets.MAILOSAUR_SERVER }}
+      MAILOSAUR_VERIFIED_DOMAIN: ${{ secrets.MAILOSAUR_VERIFIED_DOMAIN }}
+      MAILOSAUR_PREVIEWS_SERVER: ${{ secrets.MAILOSAUR_PREVIEWS_SERVER }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Install dependencies
+        run: dart pub get
+      - name: Run static analysis
+        run: dart analyze
+      - name: Run tests
+        run: dart test
+      - name: Notify on Failure
+        uses: skitionek/notify-microsoft-teams@master
+        if: ${{ failure() }}
+        with:
+          webhook_url: ${{ secrets.TEAMS_BUILDS_WEBHOOK }}
+          needs: ${{ toJson(needs) }}
+          job: ${{ toJson(job) }}
+          overwrite: "{ title: `${workflow} failed for ${repository.name}` }"
+
+  build-next:
+    if: ${{ always() }}
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      MAILOSAUR_BASE_URL: https://next.mailosaur.com/
+      MAILOSAUR_SMTP_HOST: mailosaur.email
+      MAILOSAUR_SMTP_PORT: 2525
+      MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+      MAILOSAUR_SERVER: ${{ secrets.MAILOSAUR_SERVER }}
+      MAILOSAUR_VERIFIED_DOMAIN: ${{ secrets.MAILOSAUR_VERIFIED_DOMAIN }}
+      MAILOSAUR_PREVIEWS_SERVER: ${{ secrets.MAILOSAUR_PREVIEWS_SERVER }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Install dependencies
+        run: dart pub get
+      - name: Run static analysis
+        run: dart analyze
+      - name: Run tests
+        run: dart test
+      - name: Notify on Failure
+        uses: skitionek/notify-microsoft-teams@master
+        if: ${{ failure() }}
+        with:
+          webhook_url: ${{ secrets.TEAMS_BUILDS_WEBHOOK }}
+          needs: ${{ toJson(needs) }}
+          job: ${{ toJson(job) }}
+          overwrite: "{ title: `${workflow} failed for ${repository.name}` }"
