@@ -79,6 +79,16 @@ class Messages {
       'dir': dir
     }..removeWhere((key, value) => value == null);
 
+    if (timeout == null) {
+      final response = await client.post(url.replace(queryParameters: params), body: jsonEncode(criteria));
+
+      if (response.statusCode != 200) {
+        throw MailosaurError(response.statusCode, 'Failed to search messages', response.body);
+      }
+
+      return MessageListResult.fromJson(jsonDecode(response.body));
+    }
+
     final stopwatch = Stopwatch()..start();
     while (true) {
       final response = await client.post(url.replace(queryParameters: params), body: jsonEncode(criteria));
@@ -92,12 +102,11 @@ class Messages {
         return result;
       }
 
-      if (timeout != null && stopwatch.elapsedMilliseconds > timeout) {
+      if (stopwatch.elapsedMilliseconds > timeout) {
         if (errorOnTimeout) {
           throw MailosaurError(response.statusCode, 'Search timed out', response.body);
-        } else {
-          return MessageListResult();
         }
+        return MessageListResult();
       }
 
       final delay = response.headers['x-ms-delay'];

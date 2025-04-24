@@ -152,7 +152,7 @@ void main() {
       final criteria = SearchCriteria(subject: 'Search with ellipsis … and emoji 👨🏿‍🚒');
       final results = await client.messages.search(server, criteria);
       expect(results.items.length, equals(0));
-    }, skip: true);
+    });
 
      test('Perform a spam analysis on an email', () async {
       final targetId = emails[0].id;
