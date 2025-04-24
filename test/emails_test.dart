@@ -302,15 +302,17 @@ void main() {
         return;
       }
 
+      final body = 'Forwarded message';
+
       final targetEmail = emails[0];
       final options = MessageForwardOptions(
         to: 'anything@$verifiedDomain',
-        text: 'Forwarding this email.',
+        text: body,
       );
       final forwardedMessage = await client.messages.forward(targetEmail.id, options);
 
       expect(forwardedMessage.id, isNotNull);
-      expect(forwardedMessage.subject, contains('Fwd:'));
+      expect(forwardedMessage.text.body, contains(body));
     });
 
     test('Forward email with HTML', () async {
@@ -319,30 +321,40 @@ void main() {
         return;
       }
 
+      final body = '<p>Forwarded <strong>HTML</strong> message.</p>';
+
       final targetEmail = emails[0];
       final options = MessageForwardOptions(
         to: 'anything@$verifiedDomain',
-        html: '<p>Forwarding this email.</p>',
+        html: body,
       );
       final forwardedMessage = await client.messages.forward(targetEmail.id, options);
 
       expect(forwardedMessage.id, isNotNull);
-      expect(forwardedMessage.subject, contains('Fwd:'));
+      expect(forwardedMessage.html.body, contains(body));
     });
 
-    test('Forward email with attachments', () async {
+    test('Forward email with cc recipient', () async {
       if (verifiedDomain.isEmpty) {
         print('SKIPPED: Requires verified domain secret');
         return;
       }
 
+      final body = '<p>Forwarded <strong>HTML</strong> message.</p>';
+
       final targetEmail = emails[0];
+      final ccRecipient = 'someoneelse@$verifiedDomain';
       final options = MessageForwardOptions(
         to: 'anything@$verifiedDomain',
+        html: body,
+        cc: ccRecipient,
       );
       final forwardedMessage = await client.messages.forward(targetEmail.id, options);
 
-      expect(forwardedMessage.attachments.length, greaterThan(0));
+      expect(forwardedMessage.id, isNotNull);
+      expect(forwardedMessage.html.body, contains(body));
+      expect(forwardedMessage.cc.length, equals(1));
+      expect(forwardedMessage.cc[0].email, equals(ccRecipient));
     });
 
     test('Reply to email with text', () async {
@@ -351,14 +363,16 @@ void main() {
         return;
       }
 
+      final body = 'Reply message';
+
       final targetEmail = emails[0];
       final options = MessageReplyOptions(
-        text: 'Replying to this email.',
+        text: body,
       );
       final replyMessage = await client.messages.reply(targetEmail.id, options);
 
       expect(replyMessage.id, isNotNull);
-      expect(replyMessage.subject, contains('Re:'));
+      expect(replyMessage.text.body, contains(body));
     });
 
     test('Reply to email with HTML', () async {
@@ -367,14 +381,16 @@ void main() {
         return;
       }
 
+      final body = '<p>Reply <strong>HTML</strong> message.</p>';
+
       final targetEmail = emails[0];
       final options = MessageReplyOptions(
-        html: '<p>Replying to this email.</p>',
+        html: body,
       );
       final replyMessage = await client.messages.reply(targetEmail.id, options);
 
       expect(replyMessage.id, isNotNull);
-      expect(replyMessage.subject, contains('Re:'));
+      expect(replyMessage.html.body, contains(body));
     });
 
     test('Reply to email with CC', () async {
@@ -383,15 +399,18 @@ void main() {
         return;
       }
 
+      final body = '<p>Reply <strong>HTML</strong> message.</p>';
+
       final targetEmail = emails[0];
       final ccRecipient = 'someoneelse@$verifiedDomain';
       final options = MessageReplyOptions(
-        html: '<p>Replying to this email.</p>',
+        html: body,
         cc: ccRecipient,
       );
       final replyMessage = await client.messages.reply(targetEmail.id, options);
 
       expect(replyMessage.id, isNotNull);
+      expect(replyMessage.html.body, contains(body));
       expect(replyMessage.cc.length, equals(1));
       expect(replyMessage.cc[0].email, equals(ccRecipient));
     });
