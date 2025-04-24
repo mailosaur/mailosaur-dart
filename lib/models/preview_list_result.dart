@@ -17,7 +17,7 @@ class PreviewListResult {
 
   Map<String, dynamic> toJson() {
     return {
-      'items': items?.map((item) => item.toJson()).toList(),
+      'items': items.map((item) => item.toJson()).toList(),
     };
   }
 }

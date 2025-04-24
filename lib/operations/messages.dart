@@ -14,7 +14,7 @@ class Messages {
     }
 
     final result = await search(server, criteria, timeout: timeout, receivedAfter: receivedAfter, dir: dir);
-    return await getById(result.items?[0].id ?? '');
+    return await getById(result.items[0].id);
   }
 
   Future<Message> getById(String id) async {
@@ -88,7 +88,7 @@ class Messages {
       }
 
       final result = MessageListResult.fromJson(jsonDecode(response.body));
-      if (result.items != null && result.items.isNotEmpty) {
+      if (result.items.isNotEmpty) {
         return result;
       }
 

@@ -51,7 +51,7 @@ void main() {
       expect(result.items.length, greaterThan(0));
 
       // Ensure we can download one of the generated previews
-      final file = await client.files.getPreview(result.items[0].id);
+      final file = client.files.getPreview(result.items[0].id);
       expect(file, isNotNull);
     });
   });

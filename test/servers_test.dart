@@ -35,18 +35,18 @@ void main() {
       expect(createdServer.name, equals(serverName));
 
       // Retrieve the server
-      final retrievedServer = await client.servers.get(createdServer.id!);
+      final retrievedServer = await client.servers.get(createdServer.id);
       expect(retrievedServer.name, createdServer.name);
 
       // Update the server
-      final updatedServer = await client.servers.update(retrievedServer.id!, {'name': '$serverName updated with ellipsis … and emoji 👨🏿‍🚒'});
+      final updatedServer = await client.servers.update(retrievedServer.id, {'name': '$serverName updated with ellipsis … and emoji 👨🏿‍🚒'});
       expect(updatedServer['name'], equals('$serverName updated with ellipsis … and emoji 👨🏿‍🚒'));
 
       // Delete the server
-      await client.servers.delete(retrievedServer.id!);
+      await client.servers.delete(retrievedServer.id);
 
       // Attempting to delete again should fail
-      expect(() async => await client.servers.delete(retrievedServer.id!), throwsException);
+      expect(() async => await client.servers.delete(retrievedServer.id), throwsException);
     });
 
     test('Failed create', () async {
