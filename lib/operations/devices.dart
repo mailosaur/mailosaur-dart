@@ -13,7 +13,7 @@ class Devices {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to list devices', response.body);
+      throw MailosaurError(response);
     }
 
     return DeviceListResult.fromJson(jsonDecode(response.body));
@@ -24,7 +24,7 @@ class Devices {
     final response = await client.post(url, body: jsonEncode(deviceCreateOptions.toJson()));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to create device', response.body);
+      throw MailosaurError(response);
     }
 
     return Device.fromJson(jsonDecode(response.body));
@@ -43,7 +43,7 @@ class Devices {
         : await client.post(url, body: jsonEncode({'sharedSecret': query}));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to retrieve OTP', response.body);
+      throw MailosaurError(response);
     }
 
     return OtpResult.fromJson(jsonDecode(response.body));
@@ -54,7 +54,7 @@ class Devices {
     final response = await client.delete(url);
 
     if (response.statusCode != 204) {
-      throw MailosaurError(response.statusCode, 'Failed to delete device', response.body);
+      throw MailosaurError(response);
     }
   }
 }

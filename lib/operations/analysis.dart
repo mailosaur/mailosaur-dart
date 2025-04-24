@@ -13,7 +13,7 @@ class Analysis {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to perform spam analysis', response.body);
+      throw MailosaurError(response);
     }
 
     return SpamAnalysisResult.fromJson(jsonDecode(response.body));
@@ -24,7 +24,7 @@ class Analysis {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to perform deliverability analysis', response.body);
+      throw MailosaurError(response);
     }
 
     return DeliverabilityReport.fromJson(jsonDecode(response.body));

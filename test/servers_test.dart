@@ -14,7 +14,7 @@ void main() {
         throw Exception("Missing necessary environment variables - refer to README.md");
       }
 
-      client = MailosaurClient(apiKey, baseUrl);
+      client = MailosaurClient(apiKey, baseUrl: baseUrl);
     });
 
     test('List servers', () async {

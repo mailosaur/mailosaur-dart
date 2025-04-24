@@ -13,7 +13,7 @@ class Usage {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to retrieve account usage limits', response.body);
+      throw MailosaurError(response);
     }
 
     return UsageAccountLimits.fromJson(jsonDecode(response.body));
@@ -24,7 +24,7 @@ class Usage {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to retrieve usage transactions', response.body);
+      throw MailosaurError(response);
     }
 
     final data = jsonDecode(response.body);

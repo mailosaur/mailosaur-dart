@@ -19,7 +19,7 @@ class MailosaurClient {
   final Previews previews;
   // TODO from .models.mailosaur_exception import MailosaurException
 
-  MailosaurClient(String apiKey, String? baseUrl)
+  MailosaurClient(String apiKey, { String? baseUrl })
       : servers = _createApi<Servers>(Servers.new, apiKey, baseUrl),
         messages = _createApi<Messages>(Messages.new, apiKey, baseUrl),
         analysis = _createApi<Analysis>(Analysis.new, apiKey, baseUrl),
@@ -30,7 +30,7 @@ class MailosaurClient {
 
   static T _createApi<T>(T Function(HttpClient, String) constructor, String apiKey, String? baseUrl) {
     final client = HttpClient(apiKey);
-    final resolvedBaseUrl = baseUrl ?? 'https://mailosaur.com';
+    final resolvedBaseUrl = baseUrl ?? 'https://mailosaur.com/';
     return constructor(client, resolvedBaseUrl);
   }
 

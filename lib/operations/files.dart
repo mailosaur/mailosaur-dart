@@ -12,7 +12,7 @@ class Files {
     final response = await client.send(http.Request('GET', url));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to download attachment');
+      throw MailosaurError(response);
     }
 
     yield* response.stream;
@@ -23,7 +23,7 @@ class Files {
     final response = await client.send(http.Request('GET', url));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to download email');
+      throw MailosaurError(response);
     }
 
     yield* response.stream;
@@ -34,7 +34,7 @@ class Files {
     final response = await client.send(http.Request('GET', url));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to download preview');
+      throw MailosaurError(response);
     }
 
     yield* response.stream;

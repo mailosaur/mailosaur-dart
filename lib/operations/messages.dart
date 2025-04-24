@@ -22,7 +22,7 @@ class Messages {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to retrieve message', response.body);
+      throw MailosaurError(response);
     }
 
     return Message.fromJson(jsonDecode(response.body));
@@ -33,7 +33,7 @@ class Messages {
     final response = await client.delete(url);
 
     if (response.statusCode != 204) {
-      throw MailosaurError(response.statusCode, 'Failed to delete message', response.body);
+      throw MailosaurError(response);
     }
   }
 
@@ -51,7 +51,7 @@ class Messages {
     final response = await client.get(url.replace(queryParameters: params));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to list messages', response.body);
+      throw MailosaurError(response);
     }
 
     return MessageListResult.fromJson(jsonDecode(response.body));
@@ -64,7 +64,7 @@ class Messages {
     final response = await client.delete(url.replace(queryParameters: params));
 
     if (response.statusCode != 204) {
-      throw MailosaurError(response.statusCode, 'Failed to delete all messages', response.body);
+      throw MailosaurError(response);
     }
   }
 
@@ -83,7 +83,7 @@ class Messages {
       final response = await client.post(url.replace(queryParameters: params), body: jsonEncode(criteria));
 
       if (response.statusCode != 200) {
-        throw MailosaurError(response.statusCode, 'Failed to search messages', response.body);
+        throw MailosaurError(response);
       }
 
       return MessageListResult.fromJson(jsonDecode(response.body));
@@ -94,7 +94,7 @@ class Messages {
       final response = await client.post(url.replace(queryParameters: params), body: jsonEncode(criteria));
 
       if (response.statusCode != 200) {
-        throw MailosaurError(response.statusCode, 'Failed to search messages', response.body);
+        throw MailosaurError(response);
       }
 
       final result = MessageListResult.fromJson(jsonDecode(response.body));
@@ -104,7 +104,7 @@ class Messages {
 
       if (stopwatch.elapsedMilliseconds > timeout) {
         if (errorOnTimeout) {
-          throw MailosaurError(response.statusCode, 'Search timed out', response.body);
+          throw MailosaurError(response);
         }
         return MessageListResult();
       }
@@ -122,7 +122,7 @@ class Messages {
     final response = await client.post(url.replace(queryParameters: params), body: jsonEncode(options));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to create message', response.body);
+      throw MailosaurError(response);
     }
 
     return Message.fromJson(jsonDecode(response.body));
@@ -133,7 +133,7 @@ class Messages {
     final response = await client.post(url, body: jsonEncode(options));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to forward message', response.body);
+      throw MailosaurError(response);
     }
 
     return Message.fromJson(jsonDecode(response.body));
@@ -144,7 +144,7 @@ class Messages {
     final response = await client.post(url, body: jsonEncode(options));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to reply to message', response.body);
+      throw MailosaurError(response);
     }
 
     return Message.fromJson(jsonDecode(response.body));
@@ -155,7 +155,7 @@ class Messages {
     final response = await client.post(url, body: jsonEncode(options));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to generate previews', response.body);
+      throw MailosaurError(response);
     }
 
     return PreviewListResult.fromJson(jsonDecode(response.body));

@@ -13,7 +13,7 @@ class Previews {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to list email clients', response.body);
+      throw MailosaurError(response);
     }
 
     return PreviewEmailClientListResult.fromJson(jsonDecode(response.body));

@@ -25,7 +25,7 @@ class Servers {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to list servers', response.body);
+      throw MailosaurError(response);
     }
 
     return ServerListResult.fromJson(jsonDecode(response.body));
@@ -36,7 +36,7 @@ class Servers {
     final response = await client.post(url, body: jsonEncode(serverCreateOptions.toJson()));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to create server', response.body);
+      throw MailosaurError(response);
     }
 
     return Server.fromJson(jsonDecode(response.body));
@@ -47,7 +47,7 @@ class Servers {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to retrieve server', response.body);
+      throw MailosaurError(response);
     }
 
     return Server.fromJson(jsonDecode(response.body));
@@ -58,7 +58,7 @@ class Servers {
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to retrieve server password', response.body);
+      throw MailosaurError(response);
     }
 
     final data = jsonDecode(response.body);
@@ -70,7 +70,7 @@ class Servers {
     final response = await client.delete(url);
 
     if (response.statusCode != 204) {
-      throw MailosaurError(response.statusCode, 'Failed to delete server', response.body);
+      throw MailosaurError(response);
     }
   }
 
@@ -79,7 +79,7 @@ class Servers {
     final response = await client.put(url, body: jsonEncode(server));
 
     if (response.statusCode != 200) {
-      throw MailosaurError(response.statusCode, 'Failed to update server', response.body);
+      throw MailosaurError(response);
     }
 
     return jsonDecode(response.body);
