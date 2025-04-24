@@ -58,6 +58,9 @@ void main() {
       final email = await client.messages.get(server, criteria);
       expect(email.id, isNotNull);
       expect(email.subject, isNotNull);
+      
+      // Clean up after test
+      await client.messages.delete(email.id);
     });
 
     test('getById, return a single email', () async {
