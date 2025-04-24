@@ -9,34 +9,37 @@ class Files {
 
   Stream<List<int>> getAttachment(String id) async* {
     final url = Uri.parse('${baseUrl}api/files/attachments/$id');
-    final response = await client.send(http.Request('GET', url));
+    final streamedResponse = await client.send(http.Request('GET', url));
 
-    if (response.statusCode != 200) {
+    if (streamedResponse.statusCode != 200) {
+      final response = await http.Response.fromStream(streamedResponse);
       throw MailosaurError(response);
     }
 
-    yield* response.stream;
+    yield* streamedResponse.stream;
   }
 
   Stream<List<int>> getEmail(String id) async* {
     final url = Uri.parse('${baseUrl}api/files/email/$id');
-    final response = await client.send(http.Request('GET', url));
+    final streamedResponse = await client.send(http.Request('GET', url));
 
-    if (response.statusCode != 200) {
+    if (streamedResponse.statusCode != 200) {
+      final response = await http.Response.fromStream(streamedResponse);
       throw MailosaurError(response);
     }
 
-    yield* response.stream;
+    yield* streamedResponse.stream;
   }
 
   Stream<List<int>> getPreview(String id) async* {
     final url = Uri.parse('${baseUrl}api/files/previews/$id');
-    final response = await client.send(http.Request('GET', url));
+    final streamedResponse = await client.send(http.Request('GET', url));
 
-    if (response.statusCode != 200) {
+    if (streamedResponse.statusCode != 200) {
+      final response = await http.Response.fromStream(streamedResponse);
       throw MailosaurError(response);
     }
 
-    yield* response.stream;
+    yield* streamedResponse.stream;
   }
 }
