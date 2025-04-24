@@ -24,7 +24,7 @@ class Mailer {
       List.generate(10, (index) => Random().nextInt(26) + 65),
     );
 
-    final String randomToAddress = sendToAddress ?? '$randomString@$server.$verifiedDomain';
+    final String randomToAddress = sendToAddress ?? client.servers.generateEmailAddress(server);
 
     final message = Message()
       ..from = Address('$randomString@$verifiedDomain', '$randomString $randomString')
@@ -47,7 +47,6 @@ class Mailer {
     final smtpServer = SmtpServer(host, port: port);
 
     try {
-      print('Sending email to $randomToAddress $host $port');
       await send(message, smtpServer);
     } catch (e) {
       print('Failed to send email: $e');

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mailosaur/mailosaur.dart';
@@ -9,9 +10,13 @@ class Servers {
 
   Servers(this.client, this.baseUrl);
 
-  Future<String> generateEmailAddress(String server) async {
+  String generateEmailAddress(String server) {
     final host = Platform.environment['MAILOSAUR_SMTP_HOST'] ?? 'mailosaur.net';
-    final randomString = List.generate(10, (index) => (index % 2 == 0 ? 'A' : '0')).join();
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    final rand = Random();
+    final randomString = String.fromCharCodes(
+      List.generate(10, (_) => chars.codeUnitAt(rand.nextInt(chars.length)))
+    );
     return "$randomString@$server.$host";
   }
 
