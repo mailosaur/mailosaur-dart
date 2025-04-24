@@ -24,6 +24,6 @@ class MailosaurError implements Exception {
 
   @override
   String toString() {
-    return 'MailosaurError: $message (Status code: ${response.statusCode})${response.body != null ? '\n ${response.body}' : ''}';
+    return 'MailosaurError: $message (Status code: ${response.statusCode})\n ${response.body}';
   }
 }
