@@ -47,6 +47,7 @@ class Mailer {
     final smtpServer = SmtpServer(host, port: port);
 
     try {
+      print('Sending email to $randomToAddress $host $port');
       await send(message, smtpServer);
     } catch (e) {
       print('Failed to send email: $e');
