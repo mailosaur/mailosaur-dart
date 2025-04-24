@@ -127,7 +127,7 @@ class Messages {
       throw MailosaurError(response.statusCode, 'Failed to forward message', response.body);
     }
 
-    return jsonDecode(response.body);
+    return Message.fromJson(jsonDecode(response.body));
   }
 
   Future<Message> reply(String id, MessageReplyOptions options) async {
@@ -138,7 +138,7 @@ class Messages {
       throw MailosaurError(response.statusCode, 'Failed to reply to message', response.body);
     }
 
-    return jsonDecode(response.body);
+    return Message.fromJson(jsonDecode(response.body));
   }
 
   Future<PreviewListResult> generatePreviews(String id, PreviewRequestOptions options) async {
