@@ -6,6 +6,8 @@ import 'operations/messages.dart';
 import 'operations/previews.dart';
 import 'operations/servers.dart';
 import 'operations/usage.dart';
+import 'dart:io';
+import 'package:yaml/yaml.dart';
 
 export 'models/index.dart';
 
@@ -58,15 +60,23 @@ class MailosaurClient {
 
 class HttpClient extends http.BaseClient {
   final String apiKey;
+  late String userAgent;
   final http.Client _inner = http.Client();
 
-  HttpClient(this.apiKey);
+  HttpClient(this.apiKey) {
+    _initializeUserAgent();
+  }
+
+  void _initializeUserAgent() {
+    final pubspec = loadYaml(File('pubspec.yaml').readAsStringSync());
+    userAgent = 'mailosaur-dart/${pubspec['version'] ?? 'unknown'}';
+  }
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
     request.headers['Authorization'] = 'Bearer $apiKey';
     request.headers['Content-Type'] = 'application/json';
-    request.headers['User-Agent'] = 'mailosaur-dart/1.0.0';
+    request.headers['User-Agent'] = userAgent;
     return _inner.send(request);
   }
 }
