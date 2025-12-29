@@ -151,7 +151,7 @@ class Messages {
   }
 
   Future<PreviewListResult> generatePreviews(String id, PreviewRequestOptions options) async {
-    final url = Uri.parse('${baseUrl}api/messages/$id/previews');
+    final url = Uri.parse('${baseUrl}api/messages/$id/screenshots');
     final response = await client.post(url, body: jsonEncode(options));
 
     if (response.statusCode != 200) {

@@ -11,9 +11,9 @@ void main() {
     setUpAll(() {
       final apiKey = Platform.environment['MAILOSAUR_API_KEY'];
       final baseUrl = Platform.environment['MAILOSAUR_BASE_URL'];
-      server = Platform.environment['MAILOSAUR_PREVIEWS_SERVER'] ?? '';
+      server = Platform.environment['MAILOSAUR_SERVER'] ?? '';
 
-      if (apiKey == null || apiKey.isEmpty) {
+      if (apiKey == null || apiKey.isEmpty || server.isEmpty) {
         throw Exception("Missing necessary environment variables - refer to README.md");
       }
 
@@ -27,11 +27,6 @@ void main() {
     });
 
     test('Generate previews', () async {
-      if (server.isEmpty) {
-        print('SKIPPED: Requires server with previews enabled');
-        return;
-      }
-
       final randomString = List.generate(10, (index) => String.fromCharCode(65 + index)).join();
       final host = Platform.environment['MAILOSAUR_SMTP_HOST'] ?? 'mailosaur.net';
       final testEmailAddress = "$randomString@$server.$host";
@@ -41,8 +36,8 @@ void main() {
       final criteria = SearchCriteria(sentTo: testEmailAddress);
       final email = await client.messages.get(server, criteria);
 
-      final request = PreviewRequestOptions(previews: [
-        PreviewRequest(emailClient: 'OL2021')
+      final request = PreviewRequestOptions(emailClients: [
+        'iphone-16plus-applemail-lightmode-portrait'
       ]);
 
       final result = await client.messages.generatePreviews(email.id, request);
@@ -51,7 +46,7 @@ void main() {
       expect(result.items.length, greaterThan(0));
 
       // Ensure we can download one of the generated previews
-      final file = client.files.getPreview(result.items[0].id);
+      final file = await client.files.getPreview(result.items[0].id);
       expect(file, isNotNull);
     });
   });

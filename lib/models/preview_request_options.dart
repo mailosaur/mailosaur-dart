@@ -1,24 +1,21 @@
-import 'preview_request.dart';
-
 class PreviewRequestOptions {
-  List<PreviewRequest>? previews;
+  List<String>? emailClients;
 
   PreviewRequestOptions({
-    this.previews,
+    this.emailClients,
   });
 
   factory PreviewRequestOptions.fromJson(Map<String, dynamic> json) {
     return PreviewRequestOptions(
-      previews: json['previews'] != null
-          ? List<PreviewRequest>.from(
-              json['previews'].map((item) => PreviewRequest.fromJson(item)))
+      emailClients: json['emailClients'] != null
+          ? List<String>.from(json['emailClients'])
           : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'previews': previews?.map((item) => item.toJson()).toList(),
+      'emailClients': emailClients,
     };
   }
 }
