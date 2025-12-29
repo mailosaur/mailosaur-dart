@@ -8,14 +8,14 @@ class Previews {
 
   Previews(this.client, this.baseUrl);
 
-  Future<PreviewEmailClientListResult> listEmailClients() async {
-    final url = Uri.parse('${baseUrl}api/previews/clients');
+  Future<EmailClientListResult> listEmailClients() async {
+    final url = Uri.parse('${baseUrl}api/screenshots/clients');
     final response = await client.get(url);
 
     if (response.statusCode != 200) {
       throw MailosaurError(response);
     }
 
-    return PreviewEmailClientListResult.fromJson(jsonDecode(response.body));
+    return EmailClientListResult.fromJson(jsonDecode(response.body));
   }
 }

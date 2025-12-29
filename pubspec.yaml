@@ -1,6 +1,6 @@
 name: mailosaur
 description: The Mailosaur Dart library lets you integrate email and SMS testing into your continuous integration process.
-version: 1.0.1
+version: 2.0.0
 repository: https://github.com/mailosaur/mailosaur-dart
 
 environment:

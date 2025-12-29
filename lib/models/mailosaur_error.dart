@@ -1,11 +1,16 @@
 import 'package:http/http.dart' as http;
 
 class MailosaurError implements Exception {
-  final http.Response response;
+  final http.Response? response;
   final String message;
+  final String? errorType;
 
-  MailosaurError(this.response)
-      : message = _generateMessage(response);
+  MailosaurError(http.Response this.response)
+      : message = _generateMessage(response),
+        errorType = null;
+
+  MailosaurError.withMessage(this.message, this.errorType)
+      : response = null;
 
   static String _generateMessage(http.Response response) {
     switch (response.statusCode) {
@@ -17,6 +22,8 @@ class MailosaurError implements Exception {
         return "Insufficient permission to perform that task.";
       case 404:
         return "Not found, check input parameters.";
+      case 410:
+        return "Permanently expired or deleted.";
       default:
         return "An API error occurred, see response body for further information.";
     }
@@ -24,6 +31,10 @@ class MailosaurError implements Exception {
 
   @override
   String toString() {
-    return 'MailosaurError: $message (Status code: ${response.statusCode})\n ${response.body}';
+    if (response != null) {
+      return 'MailosaurError: $message (Status code: ${response!.statusCode})\n ${response!.body}';
+    } else {
+      return 'MailosaurError: $message';
+    }
   }
 }
