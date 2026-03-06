@@ -6,6 +6,7 @@ import 'operations/messages.dart';
 import 'operations/previews.dart';
 import 'operations/servers.dart';
 import 'operations/usage.dart';
+import 'models/mailosaur_error.dart';
 import 'dart:io';
 import 'package:yaml/yaml.dart';
 
@@ -19,16 +20,26 @@ class MailosaurClient {
   final Usage usage;
   final Devices devices;
   final Previews previews;
-  // TODO from .models.mailosaur_exception import MailosaurException
 
-  MailosaurClient(String apiKey, { String? baseUrl })
-      : servers = _createApi<Servers>(Servers.new, apiKey, baseUrl),
-        messages = _createApi<Messages>(Messages.new, apiKey, baseUrl),
-        analysis = _createApi<Analysis>(Analysis.new, apiKey, baseUrl),
-        files = _createApi<Files>(Files.new, apiKey, baseUrl),
-        usage = _createApi<Usage>(Usage.new, apiKey, baseUrl),
-        devices = _createApi<Devices>(Devices.new, apiKey, baseUrl),
-        previews = _createApi<Previews>(Previews.new, apiKey, baseUrl);
+  MailosaurClient({ String? apiKey, String? baseUrl })
+      : servers = _createApi<Servers>(Servers.new, _resolveApiKey(apiKey), baseUrl),
+        messages = _createApi<Messages>(Messages.new, _resolveApiKey(apiKey), baseUrl),
+        analysis = _createApi<Analysis>(Analysis.new, _resolveApiKey(apiKey), baseUrl),
+        files = _createApi<Files>(Files.new, _resolveApiKey(apiKey), baseUrl),
+        usage = _createApi<Usage>(Usage.new, _resolveApiKey(apiKey), baseUrl),
+        devices = _createApi<Devices>(Devices.new, _resolveApiKey(apiKey), baseUrl),
+        previews = _createApi<Previews>(Previews.new, _resolveApiKey(apiKey), baseUrl);
+
+  static String _resolveApiKey(String? apiKey) {
+    final resolvedApiKey = apiKey ?? Platform.environment['MAILOSAUR_API_KEY'];
+    if (resolvedApiKey == null || resolvedApiKey.isEmpty) {
+      throw MailosaurError.withMessage(
+        "'apiKey' must be set via the MAILOSAUR_API_KEY environment variable, or passed to the MailosaurClient constructor.",
+        'missing_api_key',
+      );
+    }
+    return resolvedApiKey;
+  }
 
   static T _createApi<T>(T Function(HttpClient, String) constructor, String apiKey, String? baseUrl) {
     final client = HttpClient(apiKey);

@@ -7,18 +7,12 @@ void main() {
     late MailosaurClient client;
 
     setUpAll(() async {
-      final apiKey = Platform.environment['MAILOSAUR_API_KEY'];
       final baseUrl = Platform.environment['MAILOSAUR_BASE_URL'];
-      
-      if (apiKey == null || apiKey.isEmpty) {
-        throw Exception("Missing necessary environment variables - refer to README.md");
-      }
-
-      client = MailosaurClient(apiKey, baseUrl: baseUrl);
+      client = MailosaurClient(baseUrl: baseUrl);
     });
 
     test('Unauthorized', () async {
-      final client = MailosaurClient("invalid_key");
+      final client = MailosaurClient(apiKey: "invalid_key");
       try {
         await client.servers.list();
         fail('Expected an exception to be thrown');

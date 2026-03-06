@@ -9,15 +9,14 @@ void main() {
     late String server;
 
     setUpAll(() {
-      final apiKey = Platform.environment['MAILOSAUR_API_KEY'];
       final baseUrl = Platform.environment['MAILOSAUR_BASE_URL'];
       server = Platform.environment['MAILOSAUR_SERVER'] ?? '';
 
-      if (apiKey == null || apiKey.isEmpty || server.isEmpty) {
+      if (server.isEmpty) {
         throw Exception("Missing necessary environment variables - refer to README.md");
       }
 
-      client = MailosaurClient(apiKey, baseUrl: baseUrl);
+      client = MailosaurClient(baseUrl: baseUrl);
     });
 
     test('List email clients', () async {
