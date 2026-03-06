@@ -13,6 +13,8 @@ This guide provides several key sections:
 - [Mailosaur - Dart library · ](#mailosaur---dart-library--)
   - [Get Started](#get-started)
     - [Installation](#installation)
+    - [Set your API key](#set-your-api-key)
+    - [Create your code](#create-your-code)
     - [API Reference](#api-reference)
   - [Creating an account](#creating-an-account)
   - [Test email addresses with Mailosaur](#test-email-addresses-with-mailosaur)
@@ -44,12 +46,22 @@ If you get stuck, just contact us at support@mailosaur.com.
 dart pub add mailosaur
 ```
 
-Then import the library into your code. The value for `YOUR_API_KEY` is covered in the next step ([creating an account](#creating-an-account)):
+### Set your API key
+
+Get your API key from the Mailosaur Dashboard and set it as an environment variable:
+
+```sh
+export MAILOSAUR_API_KEY='your-api-key-here'
+```
+
+### Create your code
+
+Then import the library into your code:
 
 ```dart
 import 'package:mailosaur/mailosaur.dart';
 
-final mailosaur = MailosaurClient("YOUR_API_KEY");
+final mailosaur = MailosaurClient();
 ```
 
 ### API Reference
@@ -90,7 +102,7 @@ Here's how it works:
 In automated tests you will want to wait for a new email to arrive. This library makes that easy with the `messages.get` method. Here's how you use it:
 
 ```dart
-final client = MailosaurClient("YOUR_API_KEY");
+final client = MailosaurClient();
 var serverId = "abc123";
 
 var criteria = SearchCriteria(sentTo: "test@abc123.mailosaur.net");
@@ -101,7 +113,7 @@ print("Email subject: ${email.subject}"); // "Hello world!"
 
 ### What is this code doing?
 
-1. Sets up an instance of `MailosaurClient` with your API key.
+1. Sets up an instance of `MailosaurClient` using the `MAILOSAUR_API_KEY` environment variable.
 2. Waits for an email to arrive at the server with ID `abc123`.
 3. Outputs the subject line of the email.
 
@@ -127,7 +139,7 @@ var email = await mailosaur.messages.get(
 If your account has [SMS testing](https://mailosaur.com/sms-testing/) enabled, you can reserve phone numbers to test with, then use the Mailosaur API in a very similar way to when testing email:
 
 ```dart
-final client = MailosaurClient("YOUR_API_KEY");
+final client = MailosaurClient();
 var serverId = "abc123";
 
 var criteria = SearchCriteria(sentTo: "+1234567890");

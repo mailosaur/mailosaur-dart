@@ -10,15 +10,14 @@ void main() {
     late Message email;
 
     setUpAll(() async {
-      final apiKey = Platform.environment['MAILOSAUR_API_KEY'];
       final baseUrl = Platform.environment['MAILOSAUR_BASE_URL'];
       final server = Platform.environment['MAILOSAUR_SERVER'];
       
-      if (apiKey == null || apiKey.isEmpty || server == null || server.isEmpty) {
+      if (server == null || server.isEmpty) {
         throw Exception("Missing necessary environment variables - refer to README.md");
       }
 
-      client = MailosaurClient(apiKey, baseUrl: baseUrl);
+      client = MailosaurClient(baseUrl: baseUrl);
 
       await client.messages.deleteAll(server);
 
