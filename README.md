@@ -25,6 +25,7 @@ This guide provides several key sections:
   - [Testing plain text content](#testing-plain-text-content)
     - [Extracting verification codes from plain text](#extracting-verification-codes-from-plain-text)
   - [Testing HTML content](#testing-html-content)
+    - [Working with HTML using html](#working-with-html-using-html)
   - [Working with hyperlinks](#working-with-hyperlinks)
     - [Links in plain text (including SMS messages)](#links-in-plain-text-including-sms-messages)
   - [Working with attachments](#working-with-attachments)
@@ -42,7 +43,7 @@ If you get stuck, just contact us at support@mailosaur.com.
 
 ### Installation
 
-```
+```sh
 dart pub add mailosaur
 ```
 
@@ -56,7 +57,7 @@ export MAILOSAUR_API_KEY='your-api-key-here'
 
 ### Create your code
 
-Then import the library into your code:
+Now import the library and create a client:
 
 ```dart
 import 'package:mailosaur/mailosaur.dart';
@@ -69,7 +70,7 @@ final mailosaur = MailosaurClient();
 This library is powered by the Mailosaur [email & SMS testing API](https://mailosaur.com/docs/api/). You can easily check out the API itself by looking at our [API reference documentation](https://mailosaur.com/docs/api/) or via our Postman or Insomnia collections:
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/6961255-6cc72dff-f576-451a-9023-b82dec84f95d?action=collection%2Ffork&collection-url=entityId%3D6961255-6cc72dff-f576-451a-9023-b82dec84f95d%26entityType%3Dcollection%26workspaceId%3D386a4af1-4293-4197-8f40-0eb49f831325)
-[![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Mailosaur&uri=https%3A%2F%2Fmailosaur.com%2Finsomnia.json)
+ [![Run in Insomnia](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=Mailosaur&uri=https%3A%2F%2Fmailosaur.com%2Finsomnia.json)
 
 ## Creating an account
 
@@ -95,40 +96,43 @@ Here's how it works:
   - `rAnDoM63423@abc123.mailosaur.net`
 - You can create more servers when you need them. Each one will have its own domain name.
 
-**\*Can't use test email addresses?** You can also [use SMTP to test email](https://mailosaur.com/docs/email-testing/sending-to-mailosaur/#sending-via-smtp). By connecting your product or website to Mailosaur via SMTP, Mailosaur will catch all email your application sends, regardless of the email address.\*
+***Can't use test email addresses?** You can also [use SMTP to test email](https://mailosaur.com/docs/email-testing/sending-to-mailosaur/#sending-via-smtp). By connecting your product or website to Mailosaur via SMTP, Mailosaur will catch all email your application sends, regardless of the email address.*
 
 ## Find an email
 
 In automated tests you will want to wait for a new email to arrive. This library makes that easy with the `messages.get` method. Here's how you use it:
 
 ```dart
-final client = MailosaurClient();
-var serverId = "abc123";
+final mailosaur = MailosaurClient();
 
-var criteria = SearchCriteria(sentTo: "test@abc123.mailosaur.net");
+// See https://mailosaur.com/app/project/api
+var serverId = "abc123";
+var serverDomain = "abc123.mailosaur.net";
+
+var criteria = SearchCriteria(sentTo: "anything@$serverDomain");
 var email = await mailosaur.messages.get(serverId, criteria);
 
-print("Email subject: ${email.subject}"); // "Hello world!"
+print(email.subject); // "Hello world!"
 ```
 
 ### What is this code doing?
 
-1. Sets up an instance of `MailosaurClient` using the `MAILOSAUR_API_KEY` environment variable.
+1. Sets up an instance of `MailosaurClient`, reading the API key from the `MAILOSAUR_API_KEY` environment variable.
 2. Waits for an email to arrive at the server with ID `abc123`.
 3. Outputs the subject line of the email.
 
 ### My email wasn't found
 
-First, check that the email you sent is visible in the [Mailosaur Dashboard](https://mailosaur.com/api/project/messages).
+First, check that the email you sent is visible in the [Mailosaur Dashboard](https://mailosaur.com/app/project/messages).
 
 If it is, the likely reason is that by default, `messages.get` only searches emails received by Mailosaur in the last 1 hour. You can override this behavior (see the `receivedAfter` option below), however we only recommend doing this during setup, as your tests will generally run faster with the default settings:
 
 ```dart
 var email = await mailosaur.messages.get(
   serverId,
-  searchCriteria,
+  criteria,
   // Override receivedAfter to search all messages since Jan 1st
-  receivedAfter: DateTime(2021, 01, 01).millisecondsSinceEpoch
+  receivedAfter: DateTime(2021, 1, 1).millisecondsSinceEpoch,
 );
 ```
 
@@ -139,13 +143,14 @@ var email = await mailosaur.messages.get(
 If your account has [SMS testing](https://mailosaur.com/sms-testing/) enabled, you can reserve phone numbers to test with, then use the Mailosaur API in a very similar way to when testing email:
 
 ```dart
-final client = MailosaurClient();
+final mailosaur = MailosaurClient();
+
 var serverId = "abc123";
 
-var criteria = SearchCriteria(sentTo: "+1234567890");
-var email = await mailosaur.messages.get(serverId, criteria);
+var criteria = SearchCriteria(sentTo: "4471235554444");
+var sms = await mailosaur.messages.get(serverId, criteria);
 
-print("SMS content: ${sms.text.body}");
+print(sms.text.body);
 ```
 
 ## Testing plain text content
@@ -187,6 +192,25 @@ Most emails also have an HTML body, as well as the plain text content. You can a
 print(message.html.body); // "<html><head ..."
 ```
 
+### Working with HTML using html
+
+If you need to traverse the HTML content of an email — for example, finding an element via a CSS selector — you can use the [html](https://pub.dev/packages/html) package.
+
+```sh
+dart pub add html
+```
+
+```dart
+import 'package:html/parser.dart' show parse;
+
+// ...
+
+final dom = parse(message.html.body);
+
+final el = dom.querySelector('.verification-code');
+final verificationCode = el?.text; // "542163"
+```
+
 [Read more](https://mailosaur.com/docs/test-cases/html-content/)
 
 ## Working with hyperlinks
@@ -204,7 +228,7 @@ print(firstLink.text); // "Google Search"
 print(firstLink.href); // "https://www.google.com/"
 ```
 
-**Important:** To ensure you always have valid emails. Mailosaur only extracts links that have been correctly marked up with `<a>` or `<area>` tags.
+**Important:** To ensure you always have valid emails, Mailosaur only extracts links that have been correctly marked up with `<a>` or `<area>` tags.
 
 ### Links in plain text (including SMS messages)
 
@@ -246,16 +270,16 @@ print(firstAttachment.length); // 4028
 
 ```dart
 import 'dart:io';
-import 'dart:typed_data';
 
 // ...
 
 var firstAttachment = message.attachments[1];
 
-Uint8List fileBytes = await mailosaur.files.getAttachment(firstAttachment.id);
+final stream = mailosaur.files.getAttachment(firstAttachment.id);
+final chunks = await stream.toList();
+final fileBytes = chunks.expand((chunk) => chunk).toList();
 
-final file = File(firstAttachment.fileName);
-await file.writeAsBytes(fileBytes);
+await File(firstAttachment.fileName).writeAsBytes(fileBytes);
 ```
 
 ## Working with images and web beacons
