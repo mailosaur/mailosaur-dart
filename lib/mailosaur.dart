@@ -19,7 +19,7 @@ export 'models/index.dart';
 /// [servers], [files], [devices], [analysis], [previews], [usage]) to automate
 /// email and SMS testing.
 class MailosaurClient {
-  /// Operations for creating and managing your Mailosaur servers (virtual inboxes).
+  /// Operations for creating and managing your Mailosaur inboxes (servers).
   final Servers servers;
 
   /// Operations for finding, retrieving, creating, and managing email and SMS messages.

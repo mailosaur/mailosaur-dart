@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:mailosaur/mailosaur.dart';
 
 /// Operations for finding, retrieving, creating, forwarding, replying to, and
-/// deleting the email and SMS messages received by your Mailosaur servers.
+/// deleting the email and SMS messages received by your Mailosaur inboxes (servers).
 ///
 /// Accessed via `client.messages`.
 class Messages {
@@ -13,7 +13,7 @@ class Messages {
   Messages(this.client, this.baseUrl);
 
   /// Waits for a message to be found, returning as soon as a message matching
-  /// the given `criteria` within the server identified by `server` is found.
+  /// the given `criteria` within the inbox (server) identified by `server` is found.
   ///
   /// This is the most efficient method of looking up a message, so we recommend
   /// using it wherever possible. The search waits up to `timeout` milliseconds,
@@ -65,7 +65,7 @@ class Messages {
     }
   }
 
-  /// Returns a list of your messages in summary form, for the server
+  /// Returns a list of your messages in summary form, for the inbox (server)
   /// identified by `server`.
   ///
   /// The summaries are returned sorted by received date, with the most
@@ -95,10 +95,10 @@ class Messages {
     return MessageListResult.fromJson(jsonDecode(response.body));
   }
 
-  /// Permanently deletes all messages within the server identified by `server`.
+  /// Permanently deletes all messages within the inbox (server) identified by `server`.
   ///
   /// This operation cannot be undone. Returns a [Future] that completes once
-  /// all messages within the server have been deleted.
+  /// all messages within the inbox (server) have been deleted.
   Future<void> deleteAll(String server) async {
     final url = Uri.parse('${baseUrl}api/messages');
     final params = {'server': server};
@@ -111,7 +111,7 @@ class Messages {
   }
 
   /// Returns a list of messages matching the given `criteria`, in summary form,
-  /// for the server identified by `server`.
+  /// for the inbox (server) identified by `server`.
   ///
   /// The messages are returned sorted by received date, with the most
   /// recently-received messages appearing first. Use `page` and `itemsPerPage`
@@ -173,7 +173,7 @@ class Messages {
   }
 
   /// Creates a new message that can be sent to a verified email address, within
-  /// the server identified by `server` and using the given `options`.
+  /// the inbox (server) identified by `server` and using the given `options`.
   ///
   /// This is useful in scenarios where you want an email to trigger a workflow
   /// in your product.
