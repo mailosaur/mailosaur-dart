@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mailosaur/mailosaur.dart';
 
-/// Operations for creating and managing your Mailosaur servers — the virtual
-/// inboxes that group your tests together, each with its own domain and
+/// Operations for creating and managing your Mailosaur inboxes (servers) — they
+/// group your tests together, each with its own domain and
 /// SMTP/POP3/IMAP credentials.
 ///
 /// Accessed via `client.servers`.
@@ -16,9 +16,9 @@ class Servers {
   Servers(this.client, this.baseUrl);
 
   /// Generates a random email address by appending a random string in front of
-  /// the domain name of the server identified by `server`.
+  /// the domain name of the inbox (server) identified by `server`.
   ///
-  /// Returns a random email address ending in the server's domain.
+  /// Returns a random email address ending in the domain of the inbox (server).
   String generateEmailAddress(String server) {
     final host = Platform.environment['MAILOSAUR_SMTP_HOST'] ?? 'mailosaur.net';
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -29,9 +29,9 @@ class Servers {
     return "$randomString@$server.$host";
   }
 
-  /// Returns a list of your virtual servers, sorted in alphabetical order.
+  /// Returns a list of your inboxes (servers), sorted in alphabetical order.
   ///
-  /// Returns a [Future] resolving to a [ServerListResult] containing your servers.
+  /// Returns a [Future] resolving to a [ServerListResult] containing your inboxes (servers).
   Future<ServerListResult> list() async {
     final url = Uri.parse('${baseUrl}api/servers');
     final response = await client.get(url);
@@ -43,7 +43,7 @@ class Servers {
     return ServerListResult.fromJson(jsonDecode(response.body));
   }
 
-  /// Creates a new virtual server, using the options given in
+  /// Creates a new inbox (server), using the options given in
   /// `serverCreateOptions`.
   ///
   /// Returns a [Future] resolving to the newly-created [Server].
@@ -58,7 +58,7 @@ class Servers {
     return Server.fromJson(jsonDecode(response.body));
   }
 
-  /// Retrieves the detail for the single server identified by `id`.
+  /// Retrieves the detail for the single inbox (server) identified by `id`.
   ///
   /// Returns a [Future] resolving to the [Server].
   Future<Server> get(String id) async {
@@ -72,11 +72,11 @@ class Servers {
     return Server.fromJson(jsonDecode(response.body));
   }
 
-  /// Retrieves the password for the server identified by `id`.
+  /// Retrieves the password for the inbox (server) identified by `id`.
   ///
   /// This password can be used for SMTP, POP3, and IMAP connectivity.
   ///
-  /// Returns a [Future] resolving to the server's password.
+  /// Returns a [Future] resolving to the password for the inbox (server).
   Future<String> getPassword(String id) async {
     final url = Uri.parse('${baseUrl}api/servers/$id/password');
     final response = await client.get(url);
@@ -89,11 +89,11 @@ class Servers {
     return data['value'];
   }
 
-  /// Permanently deletes the server identified by `id`.
+  /// Permanently deletes the inbox (server) identified by `id`.
   ///
   /// This will also delete all messages, associated attachments, etc. within
-  /// the server. This operation cannot be undone. Returns a [Future] that
-  /// completes once the server has been deleted.
+  /// the inbox (server). This operation cannot be undone. Returns a [Future] that
+  /// completes once the inbox (server) has been deleted.
   Future<void> delete(String id) async {
     final url = Uri.parse('${baseUrl}api/servers/$id');
     final response = await client.delete(url);
@@ -103,10 +103,10 @@ class Servers {
     }
   }
 
-  /// Updates the attributes of the server identified by `id`, applying the
+  /// Updates the attributes of the inbox (server) identified by `id`, applying the
   /// values supplied in `server`.
   ///
-  /// Returns a [Future] resolving to the updated server.
+  /// Returns a [Future] resolving to the updated inbox (server).
   Future<Map<String, dynamic>> update(String id, Map<String, dynamic> server) async {
     final url = Uri.parse('${baseUrl}api/servers/$id');
     final response = await client.put(url, body: jsonEncode(server));
